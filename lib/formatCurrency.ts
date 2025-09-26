@@ -12,3 +12,12 @@ export function formatCurrency(
     maximumFractionDigits: 0,
   }).format(num);
 }
+
+export async function getUsdToJpyRate(): Promise<number> {
+  const res = await fetch(
+    "https://fxverify.com/api/widgets/currencies/exchange-rate?from=USD&to=JPY",
+    { cache: "no-store" }
+  );
+  const data = await res.json();
+  return data?.rate?.toFixed(2) || 1;
+}

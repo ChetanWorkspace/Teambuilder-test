@@ -1,6 +1,7 @@
 import Home from "../comps/Home";
 
 import { client } from "../lib/client";
+import { getUsdToJpyRate } from "../lib/formatCurrency";
 
 export interface ProductsTypes {
   _createdAt: string;
@@ -49,9 +50,16 @@ async function getData() {
 
 export default async function Page() {
   const { products, bannerData } = await getData();
+  const rate = await getUsdToJpyRate();
+
+  const convertedProducts = products.map((p) => ({
+    ...p,
+    price: Math.round(p.price * rate),
+    oldPrice: Math.round(p.oldPrice * rate),
+  }));
   return (
     <>
-      <Home products={products} bannerData={bannerData} />
+      <Home products={convertedProducts} bannerData={bannerData} />
     </>
   );
 }
